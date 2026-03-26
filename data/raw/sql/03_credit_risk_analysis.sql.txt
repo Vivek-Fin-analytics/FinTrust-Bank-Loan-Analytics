@@ -1,0 +1,35 @@
+-- ══════════════════════════════════════════
+-- Script 03: Credit Risk & DPD Analysis
+-- ══════════════════════════════════════════
+
+USE fintrust_db;
+
+-- ──  DPD Bucket Analysis ───────────────
+SELECT
+    CASE
+        WHEN e.num_times_60p_dpd = 0          THEN '1. Clean (0 DPD)'
+        WHEN e.num_times_60p_dpd BETWEEN 1 AND 5  THEN '2. Watch (1-5 DPD)'
+        WHEN e.num_times_60p_dpd BETWEEN 6 AND 10 THEN '3. Substandard (6-10 DPD)'
+        ELSE                                        '4. NPA Risk (11+ DPD)'
+    END                                        AS dpd_bucket,
+    COUNT(*)                                   AS total_customers,
+    ROUND(COUNT(*) * 100.0 / 51336, 1)        AS pct_portfolio,
+    ROUND(AVG(e.Credit_Score), 0)              AS avg_credit_score,
+    ROUND(AVG(i.Tot_Missed_Pmnt), 2)           AS avg_missed_payments,
+    ROUND(AVG(e.NETMONTHLYINCOME), 0)          AS avg_income,
+    SUM(CASE WHEN e.Approved_Flag = 'P4'
+        THEN 1 ELSE 0 END)                     AS high_risk_count
+FROM internal_bank_data i
+JOIN external_cibil_data e ON i.PROSPECTID = e.PROSPECTID
+GROUP BY dpd_bucket
+ORDER BY dpd_bucket;
+
+
+💡 What is DPD Bucket Analysis?
+We're grouping customers by how late they are on payments.
+Like sorting hospital patients by severity:
+0 DPD      = healthy patient
+1-5 DPD    = mild symptoms — monitor
+6-10 DPD   = serious — needs treatment
+11+ DPD    = critical — NPA risk
+RBI requires banks to report this breakdown quarterly!

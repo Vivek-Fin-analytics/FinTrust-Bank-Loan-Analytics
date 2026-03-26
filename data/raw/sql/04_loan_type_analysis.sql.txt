@@ -1,0 +1,79 @@
+-- ══════════════════════════════════════════
+-- Script 04: Loan Type Portfolio Analysis
+-- ══════════════════════════════════════════
+
+USE fintrust_db;
+
+-- ──  Loan Type Distribution ────────────
+SELECT
+    'Gold Loan'                            AS loan_type,
+    SUM(i.Gold_TL)                         AS total_accounts,
+    ROUND(AVG(i.Gold_TL), 2)              AS avg_per_customer,
+    SUM(CASE WHEN i.Gold_TL > 0
+        THEN 1 ELSE 0 END)                 AS customers_with_loan,
+    ROUND(AVG(CASE WHEN i.Gold_TL > 0
+        THEN e.Credit_Score END), 0)       AS avg_credit_score,
+    ROUND(AVG(CASE WHEN i.Gold_TL > 0
+        THEN e.NETMONTHLYINCOME END), 0)   AS avg_income
+FROM internal_bank_data i
+JOIN external_cibil_data e ON i.PROSPECTID = e.PROSPECTID
+
+UNION ALL
+
+SELECT 'Personal Loan', SUM(i.PL_TL),
+    ROUND(AVG(i.PL_TL),2),
+    SUM(CASE WHEN i.PL_TL > 0 THEN 1 ELSE 0 END),
+    ROUND(AVG(CASE WHEN i.PL_TL > 0 THEN e.Credit_Score END),0),
+    ROUND(AVG(CASE WHEN i.PL_TL > 0 THEN e.NETMONTHLYINCOME END),0)
+FROM internal_bank_data i
+JOIN external_cibil_data e ON i.PROSPECTID = e.PROSPECTID
+
+UNION ALL
+
+SELECT 'Home Loan', SUM(i.Home_TL),
+    ROUND(AVG(i.Home_TL),2),
+    SUM(CASE WHEN i.Home_TL > 0 THEN 1 ELSE 0 END),
+    ROUND(AVG(CASE WHEN i.Home_TL > 0 THEN e.Credit_Score END),0),
+    ROUND(AVG(CASE WHEN i.Home_TL > 0 THEN e.NETMONTHLYINCOME END),0)
+FROM internal_bank_data i
+JOIN external_cibil_data e ON i.PROSPECTID = e.PROSPECTID
+
+UNION ALL
+
+SELECT 'Auto Loan', SUM(i.Auto_TL),
+    ROUND(AVG(i.Auto_TL),2),
+    SUM(CASE WHEN i.Auto_TL > 0 THEN 1 ELSE 0 END),
+    ROUND(AVG(CASE WHEN i.Auto_TL > 0 THEN e.Credit_Score END),0),
+    ROUND(AVG(CASE WHEN i.Auto_TL > 0 THEN e.NETMONTHLYINCOME END),0)
+FROM internal_bank_data i
+JOIN external_cibil_data e ON i.PROSPECTID = e.PROSPECTID
+
+UNION ALL
+
+SELECT 'Credit Card', SUM(i.CC_TL),
+    ROUND(AVG(i.CC_TL),2),
+    SUM(CASE WHEN i.CC_TL > 0 THEN 1 ELSE 0 END),
+    ROUND(AVG(CASE WHEN i.CC_TL > 0 THEN e.Credit_Score END),0),
+    ROUND(AVG(CASE WHEN i.CC_TL > 0 THEN e.NETMONTHLYINCOME END),0)
+FROM internal_bank_data i
+JOIN external_cibil_data e ON i.PROSPECTID = e.PROSPECTID
+
+UNION ALL
+
+SELECT 'Consumer Loan', SUM(i.Consumer_TL),
+    ROUND(AVG(i.Consumer_TL),2),
+    SUM(CASE WHEN i.Consumer_TL > 0 THEN 1 ELSE 0 END),
+    ROUND(AVG(CASE WHEN i.Consumer_TL > 0 THEN e.Credit_Score END),0),
+    ROUND(AVG(CASE WHEN i.Consumer_TL > 0 THEN e.NETMONTHLYINCOME END),0)
+FROM internal_bank_data i
+JOIN external_cibil_data e ON i.PROSPECTID = e.PROSPECTID
+
+ORDER BY total_accounts DESC;
+
+💡 Why Loan Type Analysis?
+Different loan types carry different risk levels:
+Gold Loan    → Secured by gold — lower risk
+               If customer defaults, bank takes gold
+Home Loan    → Secured by property — lower risk
+Personal Loan → No collateral — HIGHER risk
+Credit Card  → No collateral — HIGHEST risk

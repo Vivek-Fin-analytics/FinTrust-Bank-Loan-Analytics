@@ -1,0 +1,45 @@
+-- ══════════════════════════════════════════
+-- Script 06: Top Risk Customers Report
+-- Deloitte Executive Finding
+-- ══════════════════════════════════════════
+
+USE fintrust_db;
+
+-- ──  Top 20 Highest Risk Customers ─────
+SELECT
+    i.PROSPECTID                           AS customer_id,
+    e.Approved_Flag                        AS risk_tier,
+    e.Credit_Score                         AS credit_score,
+    e.num_times_60p_dpd                    AS times_60p_dpd,
+    e.num_times_30p_dpd                    AS times_30p_dpd,
+    i.Tot_Missed_Pmnt                      AS total_missed_payments,
+    e.NETMONTHLYINCOME                     AS monthly_income,
+    e.AGE                                  AS age,
+    e.EDUCATION                            AS education,
+    e.MARITALSTATUS                        AS marital_status,
+    i.Total_TL                             AS total_loans,
+    i.Tot_Active_TL                        AS active_loans,
+    e.enq_L3m                              AS enquiries_last_3months,
+    CASE
+        WHEN e.num_times_60p_dpd >= 11     THEN 'CRITICAL — Immediate Action'
+        WHEN e.num_times_60p_dpd >= 6      THEN 'HIGH — Urgent Review'
+        WHEN i.Tot_Missed_Pmnt >= 5        THEN 'HIGH — Payment Default Risk'
+        ELSE                                    'MEDIUM — Enhanced Monitoring'
+    END                                    AS action_required
+FROM internal_bank_data i
+JOIN external_cibil_data e ON i.PROSPECTID = e.PROSPECTID
+WHERE e.Approved_Flag = 'P4'
+ORDER BY e.num_times_60p_dpd DESC,
+         i.Tot_Missed_Pmnt DESC,
+         e.Credit_Score ASC
+LIMIT 20;
+
+💡 Why Top Risk Customer Report?
+This is the most important report in any credit risk engagement.
+Identifies specific customers who need immediate attention.
+In real banking:
+This list goes to:
+→ Recovery team    → call these customers immediately
+→ Credit committee → decide restructure or write-off
+→ RBI auditors     → prove bank is monitoring NPA accounts
+→ Board of directors → risk dashboard presentation

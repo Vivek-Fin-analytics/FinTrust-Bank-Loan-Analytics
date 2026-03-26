@@ -1,0 +1,31 @@
+-- ══════════════════════════════════════════
+-- Script 05: Customer Profile Analysis
+-- ══════════════════════════════════════════
+
+USE fintrust_db;
+
+-- ──  Education vs Risk Analysis ────────
+SELECT
+    e.EDUCATION                            AS education_level,
+    COUNT(*)                               AS total_customers,
+    ROUND(COUNT(*) * 100.0 / 51336, 1)    AS pct_portfolio,
+    ROUND(AVG(e.Credit_Score), 0)          AS avg_credit_score,
+    ROUND(AVG(e.NETMONTHLYINCOME), 0)      AS avg_income,
+    SUM(CASE WHEN e.Approved_Flag = 'P4'
+        THEN 1 ELSE 0 END)                 AS high_risk_count,
+    ROUND(SUM(CASE WHEN e.Approved_Flag = 'P4'
+        THEN 1 ELSE 0 END) * 100.0
+        / COUNT(*), 1)                     AS high_risk_pct,
+    ROUND(AVG(i.Tot_Missed_Pmnt), 2)       AS avg_missed_payments
+FROM internal_bank_data i
+JOIN external_cibil_data e ON i.PROSPECTID = e.PROSPECTID
+GROUP BY e.EDUCATION
+ORDER BY avg_credit_score DESC;
+
+💡 Why Customer Profile Analysis?
+Banks need to understand WHO their risky customers are.
+Education level, gender, marital status — all affect
+repayment behaviour.
+This helps bank target right customers for future loans
+and identify which segments need closer monitoring.
+RBI also requires demographic analysis in annual reports!

@@ -1,0 +1,27 @@
+-- ══════════════════════════════════════════
+-- FinTrust Bank Credit Risk Analytics
+-- Script 01: Portfolio Summary
+-- Analyst: Vivek Kumar  
+-- ══════════════════════════════════════════
+
+USE fintrust_db;
+
+-- ── Overall Portfolio Overview ────────
+SELECT
+    COUNT(*)                          AS total_customers,
+    SUM(CASE WHEN e.Approved_Flag = 'P1' THEN 1 ELSE 0 END) AS P1_lowest_risk,
+    SUM(CASE WHEN e.Approved_Flag = 'P2' THEN 1 ELSE 0 END) AS P2_low_risk,
+    SUM(CASE WHEN e.Approved_Flag = 'P3' THEN 1 ELSE 0 END) AS P3_medium_risk,
+    SUM(CASE WHEN e.Approved_Flag = 'P4' THEN 1 ELSE 0 END) AS P4_high_risk,
+    ROUND(AVG(e.Credit_Score), 0)     AS avg_credit_score,
+    MIN(e.Credit_Score)               AS min_credit_score,
+    MAX(e.Credit_Score)               AS max_credit_score,
+    ROUND(AVG(e.NETMONTHLYINCOME), 0) AS avg_monthly_income,
+    ROUND(AVG(e.AGE), 0)              AS avg_customer_age
+FROM internal_bank_data i
+JOIN external_cibil_data e ON i.PROSPECTID = e.PROSPECTID;
+
+💡 What is this query doing?
+Giving us the complete picture of our loan portfolio in one shot.
+Like a doctor taking a patient's vitals before diagnosis.
+Total customers, risk breakdown, average credit score — all in one row.
