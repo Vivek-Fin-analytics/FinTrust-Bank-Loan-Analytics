@@ -1,10 +1,10 @@
 -- ══════════════════════════════════════════
--- Script 02: Risk Tier Deep Dive
+--  Risk Tier Deep Dive
 -- ══════════════════════════════════════════
 
 USE fintrust_db;
 
--- ── 2A. Risk Tier Breakdown ───────────────
+-- ──  Risk Tier Breakdown ───────────────
 SELECT
     e.Approved_Flag                        AS risk_tier,
     COUNT(*)                               AS total_customers,
