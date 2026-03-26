@@ -26,7 +26,7 @@ ORDER BY dpd_bucket;
 
 
 💡 What is DPD Bucket Analysis?
-We're grouping customers by how late they are on payments.
+grouping customers by how late they are on payments.
 Like sorting hospital patients by severity:
 0 DPD      = healthy patient
 1-5 DPD    = mild symptoms — monitor
