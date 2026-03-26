@@ -122,10 +122,4 @@ Finance Analyst | Data Analytics Enthusiast
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](your-linkedin-url)
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-black)](your-github-url)
-```
 
----
-
-**Step 6 —** Scroll down → Commit message:
-```
-Add professional README with key findings
