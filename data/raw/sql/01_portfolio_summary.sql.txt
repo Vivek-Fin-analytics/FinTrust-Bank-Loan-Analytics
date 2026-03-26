@@ -1,0 +1,26 @@
+-- ══════════════════════════════════════════
+-- Script 02: Risk Tier Deep Dive
+-- ══════════════════════════════════════════
+
+USE fintrust_db;
+
+-- ── 2A. Risk Tier Breakdown ───────────────
+SELECT
+    e.Approved_Flag                        AS risk_tier,
+    COUNT(*)                               AS total_customers,
+    ROUND(COUNT(*) * 100.0 / 51336, 1)    AS pct_of_portfolio,
+    ROUND(AVG(e.Credit_Score), 0)          AS avg_credit_score,
+    ROUND(AVG(e.NETMONTHLYINCOME), 0)      AS avg_monthly_income,
+    ROUND(AVG(i.Tot_Missed_Pmnt), 2)       AS avg_missed_payments,
+    ROUND(AVG(e.num_times_60p_dpd), 2)     AS avg_60dpd_count,
+    ROUND(AVG(i.Tot_Active_TL), 1)         AS avg_active_loans,
+    ROUND(AVG(e.AGE), 0)                   AS avg_age
+FROM internal_bank_data i
+JOIN external_cibil_data e ON i.PROSPECTID = e.PROSPECTID
+GROUP BY e.Approved_Flag
+ORDER BY e.Approved_Flag;
+
+What is this query doing?
+Giving us the complete picture of our loan portfolio in one shot.
+Like a doctor taking a patient's vitals before diagnosis.
+Total customers, risk breakdown, average credit score — all in one row.
